@@ -1,0 +1,55 @@
+from graphviz import Digraph
+
+# Initialiser BPMN-diagrammet
+bpmn = Digraph("Incident_Response_Process", format="png")
+bpmn.attr(rankdir="LR", size='10,10')
+bpmn.attr('node', shape='rectangle', style='rounded, filled', color='lightgrey')
+
+# Start hændelse
+bpmn.node("Start", "Start: Automated Threat Detection", shape='ellipse', color="green")
+
+# Automatisk trusselsdetektion med machine learning
+bpmn.node("ML_Detection", "Machine Learning Model: Detect Threat", shape='rectangle')
+bpmn.edge("Start", "ML_Detection")
+
+# Afgørelse: reel trussel eller falsk alarm
+bpmn.node("Decision_Threat", "Is it a real threat?", shape='diamond', style="filled", color="lightblue")
+bpmn.edge("ML_Detection", "Decision_Threat")
+
+# Path for falsk alarm
+bpmn.node("False_Alarm", "Mark as False Alarm\n(No further action)", shape="rectangle", color="lightgrey")
+bpmn.edge("Decision_Threat", "False_Alarm", label="No")
+
+# Vurdering af hændelse ved incident response-teamet
+bpmn.node("Threat_Assessment", "Incident Response Team: Assess Threat", shape='rectangle')
+bpmn.edge("Decision_Threat", "Threat_Assessment", label="Yes")
+
+# Afgørelse: aktivering af incident response
+bpmn.node("Decision_Response", "Activate Incident Response?", shape='diamond', style="filled", color="lightblue")
+bpmn.edge("Threat_Assessment", "Decision_Response")
+
+# Incident response aktivering og afhjælpende foranstaltninger
+bpmn.node("Response_Activation", "Activate Incident Response", shape='rectangle')
+bpmn.edge("Decision_Response", "Response_Activation", label="Yes")
+
+# Afhjælpningsforanstaltninger
+bpmn.node("Mitigation", "Implement Mitigation Measures", shape='rectangle')
+bpmn.edge("Response_Activation", "Mitigation")
+
+# Rapportering og kommunikation
+bpmn.node("Reporting", "Generate Report", shape='rectangle')
+bpmn.edge("Mitigation", "Reporting")
+
+# Kundekommunikation
+bpmn.node("Customer_Update", "Update Customer", shape='rectangle')
+bpmn.edge("Reporting", "Customer_Update")
+
+# End hændelse
+bpmn.node("End", "End", shape="ellipse", color="green")
+bpmn.edge("Customer_Update", "End")
+
+# Render diagrammet
+bpmn.render("/mnt/data/Incident_Response_BPMN_Diagram")
+
+# Gem filstien til download
+"/mnt/data/Incident_Response_BPMN_Diagram.png"
